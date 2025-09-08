@@ -40,7 +40,7 @@
               >Orders</router-link
             >
           </li>
-          <li class="nav-item dropdown">
+          <li class="nav-item dropdown" v-if="authStore.isAdmin">
             <a
               class="nav-link dropdown-toggle"
               href="#"
@@ -75,11 +75,11 @@
               ><i class="bi bi-cart3"></i>
               <span
                 class="position-absolute start-100 translate-middle badge rounded-pill bg-danger"
-                >0</span
+                >{{ cartStore.cartCount }}</span
               ></router-link
             >
           </li>
-          <li class="nav-item">
+          <li class="nav-item" v-if="!authStore.isAuthenticated">
             <router-link
               class="nav-link"
               aria-current="page"
@@ -87,7 +87,7 @@
               >Sign In</router-link
             >
           </li>
-          <li class="nav-item">
+          <li class="nav-item" v-if="!authStore.isAuthenticated">
             <router-link
               class="nav-link"
               aria-current="page"
@@ -95,8 +95,8 @@
               >Sign Up</router-link
             >
           </li>
-          <li class="nav-item">
-            <button class="nav-link px-2">Sign Out</button>
+          <li class="nav-item" v-if="authStore.isAuthenticated">
+            <button class="nav-link px-2" @click="authStore.signOut">Sign Out</button>
           </li>
           <li class="nav-item dropdown">
             <a
@@ -129,7 +129,12 @@
 
 <script setup>
 import { APP_ROUTE_NAMES } from '@/constants/routeName'
+import { useAuthStore } from '@/stores/authStore'
+import { useCartStore } from '@/stores/cartStore'
 import { useThemeStore } from '@/stores/themeStore'
+
+const cartStore = useCartStore()
+const authStore = useAuthStore()
 
 const themeStore = useThemeStore()
 </script>

@@ -121,7 +121,7 @@
 </template>
 
 <script setup>
-// import Rating from '../shared/Rating.vue'
+import Rating from '../shared/Rating.vue'
 import { CONFIG_IMAGE_URL } from '@/constants/config'
 const props = defineProps({
   show: Boolean,

@@ -35,7 +35,7 @@
         </p>
 
         <div class="mb-2">
-          <Rating :rating="menuItem.rating" :item-id="menuItem.id" :readonly="true"></Rating>
+          <Rating :rating="menuItem.ratings" :item-id="menuItem.id" :readonly="true"></Rating>
         </div>
         <!-- Tags -->
         <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
@@ -86,8 +86,35 @@
 </template>
 <script setup>
 import { CONFIG_IMAGE_URL } from '@/constants/config'
+import { useCartStore } from '@/stores/cartStore'
+import { computed, ref } from 'vue'
+import Rating from '../shared/Rating.vue'
+
+const cartStore = useCartStore()
+const isProcessing = ref(false)
 const emit = defineEmits(['showDetails'])
 const props = defineProps({
   menuItem: Object,
 })
+
+const cartItem = computed(() => cartStore.cartItems.find((item) => item.id === props.menuItem.id))
+const isInCart = computed(() => !!cartItem.value)
+const itemQuantity = computed(() => cartItem.value?.quantity || 0)
+
+const addToCart = () => {
+  isProcessing.value = true
+  setTimeout(() => {
+    cartStore.addToCart(props.menuItem)
+    isProcessing.value = false
+  }, 300)
+}
+
+const increaseQuantity = () => cartStore.updateQuantity(props.menuItem.id, itemQuantity.value + 1)
+const decreaseQuantity = () => {
+  if (itemQuantity.value > 1) {
+    cartStore.updateQuantity(props.menuItem.id, itemQuantity.value - 1)
+  } else {
+    cartStore.removeFromCart(props.menuItem.id)
+  }
+}
 </script>
